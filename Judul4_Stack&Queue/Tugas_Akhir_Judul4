@@ -1,0 +1,109 @@
+# ANTREAN MENONTON KONSER TAYLOR SWIFT
+
+class QueueArray:
+    def __init__(self, max_size=100): 
+        # Kapasitas maksimal venue konser
+        self.MAXN = max_size 
+        self.q = [None] * self.MAXN 
+        self.front_idx = -1 
+        self.rear_idx = -1 
+        self.size = 0
+
+    def is_empty(self): 
+        return self.front_idx == -1 
+
+    def is_full(self): 
+        # Mengecek kuota tiket sudah penuh atau belum
+        return (self.rear_idx + 1) % self.MAXN == self.front_idx  
+
+    def enqueue(self, x): 
+        if self.is_full(): 
+            print("Kuota penuh! Antrean konser sudah tutup.") 
+            return 
+        
+        if self.is_empty(): 
+            self.front_idx = 0 
+            self.rear_idx = 0 
+        else: 
+            # Menambah penonton ke posisi belakang secara melingkar
+            self.rear_idx = (self.rear_idx + 1) % self.MAXN 
+            
+        self.q[self.rear_idx] = x 
+        self.size += 1
+        
+        # Estimasi waktu: 1 orang dianggap butuh 2 menit scan tiket
+        estimasi = self.size * 2
+        print(f"ID Pelanggan [{x}] masuk antrean. Estimasi nunggu: {estimasi} menit ya!") 
+
+    def dequeue(self): 
+        if self.is_empty(): 
+            print("Antrean kosong, belum ada fans yang datang.") 
+            return 
+        
+        print(f"ID Pelanggan [{self.q[self.front_idx]}] silakan masuk ke area konser!") 
+        
+        if self.front_idx == self.rear_idx: 
+            # Reset jika antrean sudah habis diproses
+            self.front_idx = -1 
+            self.rear_idx = -1 
+        else: 
+            self.front_idx = (self.front_idx + 1) % self.MAXN 
+        self.size -= 1
+
+    def peek(self): 
+        if self.is_empty(): 
+            print("Antrean kosong.") 
+            return 
+        print(f"Yang lagi di depan loket sekarang ID: {self.q[self.front_idx]}") 
+
+    def display(self): 
+        if self.is_empty(): 
+            print("Belum ada antrean.") 
+            return 
+        
+        print("Urutan antrean konser (Depan ke Belakang): ", end="") 
+        i = self.front_idx 
+        while True: 
+            print(f"[{self.q[i]}]", end=" ") 
+            if i == self.rear_idx: 
+                break 
+            i = (i + 1) % self.MAXN 
+        print() 
+
+def main(): 
+    # Set kuota maksimal 10 orang
+    queue = QueueArray(max_size=10) 
+    pilih = 0 
+    while pilih != 5: 
+        print("\n=== ✨ TAYLOR SWIFT CONCERT ✨ ===") 
+        print("1. Tambah Antrean (Enqueue)") 
+        print("2. Panggil Antrean (Dequeue)") 
+        print("3. Cek Orang Terdepan (Peek)") 
+        print("4. Tampilkan Semua Fans") 
+        print("5. Keluar") 
+        
+        try: 
+            pilih = int(input("Pilih menu: ")) 
+        except ValueError: 
+            print("Input harus angka!") 
+            continue 
+
+        if pilih == 1: 
+            try: 
+                val = int(input("Masukkan Nomor Tiket: ")) 
+                queue.enqueue(val) 
+            except ValueError: 
+                print("Nomor tiket harus angka!") 
+        elif pilih == 2: 
+            queue.dequeue() 
+        elif pilih == 3: 
+            queue.peek() 
+        elif pilih == 4: 
+            queue.display() 
+        elif pilih == 5: 
+            print("Sistem dimatikan. Happy Watching! 🎤") 
+        else: 
+            print("Menu tidak tersedia!") 
+
+if __name__ == "__main__": 
+    main()
